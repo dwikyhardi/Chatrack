@@ -8,13 +8,91 @@
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="match_parent">
-        <LinearLayout
+        android:layout_height="match_parent"
+        android:layout_margin="10dp">
+
+        <ImageView
+            android:id="@+id/judul"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="40dp"
+            android:src="@drawable/chatrack_logo"
+            android:textAlignment="center"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/username"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_below="@+id/judul"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="10dp"
+            android:text="Username"
+            android:textSize="15dp" />
+
+        <EditText
+            android:id="@+id/editusername"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_below="@+id/username"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:textSize="10dp" />
+
+        <TextView
+            android:id="@+id/password"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_below="@+id/editusername"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="10dp"
+            android:text="Password"
+            android:textSize="15dp" />
+
+        <EditText
+            android:id="@+id/editpassword"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_below="@id/password"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:textSize="10dp" />
+
+        <Button
+            android:id="@+id/btnlogin"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="40dp"
+            android:layout_below="@+id/editpassword"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:text="LOGIN" />
 
-        </LinearLayout>
+        <RelativeLayout
+            android:background="@drawable/rounded_corner"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_below="@+id/btnlogin"
+            android:layout_marginLeft="50dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="50dp">
+
+            <ImageView
+                android:id="@+id/imgViewGoogle"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/google" />
+
+            <TextView
+                android:textColor="@color/Putih"
+                android:id="@+id/SignUp"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_toRightOf="@+id/imgViewGoogle"
+                android:paddingTop="15dp"
+                android:text="SignUp With Google"
+                android:textSize="20dp" />
+        </RelativeLayout>
     </RelativeLayout>
-
-
 </android.support.constraint.ConstraintLayout>
