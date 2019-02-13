@@ -68,7 +68,6 @@
             android:text="LOGIN" />
 
         <RelativeLayout
-            android:background="@drawable/rounded_corner"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_below="@+id/btnlogin"
@@ -76,23 +75,11 @@
             android:layout_marginTop="10dp"
             android:layout_marginRight="50dp">
 
-            <ImageView
-                android:id="@+id/imgViewGoogle"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_alignParentLeft="true"
-                android:layout_centerHorizontal="true"
-                android:src="@drawable/google" />
+            <com.google.android.gms.common.SignInButton
+                android:id="@+id/sign_in_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
-            <TextView
-                android:textColor="@color/Putih"
-                android:id="@+id/SignUp"
-                android:layout_width="wrap_content"
-                android:layout_height="60dp"
-                android:layout_toRightOf="@+id/imgViewGoogle"
-                android:paddingTop="15dp"
-                android:text="SignUp With Google"
-                android:textSize="20dp" />
         </RelativeLayout>
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>
