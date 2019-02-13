@@ -7,8 +7,9 @@
     tools:context=".MainActivity">
 
     <RelativeLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:id="@+id/MainAc"
         android:layout_margin="10dp">
 
         <ImageView
@@ -20,49 +21,55 @@
             android:textAlignment="center"
             android:textSize="20dp" />
 
-        <TextView
-            android:id="@+id/username"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="20dp"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/judul"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="10dp"
-            android:text="Username"
-            android:textSize="15dp" />
+            android:id="@+id/RlLogin">
 
-        <EditText
-            android:id="@+id/editusername"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_below="@+id/username"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:textSize="10dp" />
+            <TextView
+                android:id="@+id/username"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="10dp"
+                android:text="Username"
+                android:textSize="16dp" />
 
-        <TextView
-            android:id="@+id/password"
-            android:layout_width="match_parent"
-            android:layout_height="20dp"
-            android:layout_below="@+id/editusername"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="10dp"
-            android:text="Password"
-            android:textSize="15dp" />
+            <EditText
+                android:id="@+id/editusername"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@+id/username"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:textSize="16dp" />
 
-        <EditText
-            android:id="@+id/editpassword"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_below="@id/password"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:textSize="10dp" />
+            <TextView
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_below="@+id/editusername"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="10dp"
+                android:text="Password"
+                android:textSize="16dp" />
+
+            <EditText
+                android:id="@+id/editpassword"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@id/password"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:textSize="16dp" />
+        </RelativeLayout>
 
         <Button
             android:id="@+id/btnlogin"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:layout_below="@+id/editpassword"
+            android:layout_below="@+id/RlLogin"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
             android:text="LOGIN" />
@@ -78,7 +85,7 @@
             <com.google.android.gms.common.SignInButton
                 android:id="@+id/sign_in_button"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"/>
 
         </RelativeLayout>
     </RelativeLayout>

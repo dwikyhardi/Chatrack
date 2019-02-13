@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "514977479749",
+    "firebase_url": "https://chatrack.firebaseio.com",
+    "project_id": "chatrack",
+    "storage_bucket": "chatrack.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:514977479749:android:63d5363859b16ee0",
+        "android_client_info": {
+          "package_name": "root.example.com.chatrack"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "514977479749-rejqt4t1ebb4fnjt6dfu16tusgoerush.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "root.example.com.chatrack",
+            "certificate_hash": "2e3481cf4d868e783aa5674525e5e2daec7c4838"
+          }
+        },
+        {
+          "client_id": "514977479749-1djgjj1mblghqp046dssh1n7skqp4v7j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7mWRaH7l3fDnhzsvULQJh6Xh7wVHBxF4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "514977479749-1djgjj1mblghqp046dssh1n7skqp4v7j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

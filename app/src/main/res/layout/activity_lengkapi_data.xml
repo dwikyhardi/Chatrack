@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LengkapiData">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:id="@+id/RlJudul"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/colorPrimary">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="70dp"
+                    android:textColor="@color/Putih"
+                    android:layout_centerHorizontal="true"
+                    android:layout_margin="15dp"
+                    android:text="Lengkapi Data"
+                    android:textSize="50dp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/RlJudul"
+                android:layout_margin="10dp"
+                android:paddingTop="100dp"
+                android:paddingBottom="100dp"
+                android:background="@drawable/background_lengkapi_data">
+
+                <RelativeLayout
+                    android:id="@+id/RLNama"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="15dp">
+
+                    <ImageView
+                        android:id="@+id/IvNama"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/ic_person_black_24dp"
+                        android:tint="@color/Hitam" />
+
+                    <EditText
+                        android:id="@+id/EtNama"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_toRightOf="@+id/IvNama"
+                        android:hint="Nama Lengkap" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/RlAlamat"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_below="@+id/RLNama"
+                    android:layout_marginTop="15dp">
+
+                    <ImageView
+                        android:id="@+id/IvAlamat"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/ic_map_black_24dp"
+                        android:tint="@color/Hitam" />
+
+                    <EditText
+                        android:id="@+id/EtAlamat"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_toRightOf="@+id/IvAlamat"
+                        android:hint="Alamat"
+                        android:inputType="textMultiLine" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/RlJenisKelamin"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_below="@+id/RlAlamat"
+                    android:layout_marginTop="15dp">
+
+                    <ImageView
+                        android:id="@+id/IvJenisKelamin"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/gender"
+                        android:tint="@color/Hitam" />
+
+                    <Spinner
+                        android:id="@+id/SpJenisKelamin"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_toRightOf="@+id/IvJenisKelamin"
+                        android:hint="Alamat"
+                        android:entries="@array/JenisKelamin"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/Hitam"
+                        android:layout_below="@+id/SpJenisKelamin"
+                        android:layout_marginStart="50dp">
+
+                    </LinearLayout>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/RlTanggalLahir"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_below="@+id/RlJenisKelamin"
+                    android:layout_marginTop="15dp">
+
+                    <ImageView
+                        android:id="@+id/IvTanggalLahir"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/ic_date_range_black_24dp"
+                        android:tint="@color/Hitam" />
+
+                    <TextView
+                        android:id="@+id/TvTanggalLahir"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:textSize="18dp"
+                        android:paddingTop="15dp"
+                        android:paddingLeft="20dp"
+                        android:layout_toRightOf="@+id/IvTanggalLahir"
+                        android:hint="Tanggal Lahir"
+                        android:inputType="textMultiLine" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/Hitam"
+                        android:layout_below="@+id/TvTanggalLahir"
+                        android:layout_marginStart="50dp">
+
+                    </LinearLayout>
+                </RelativeLayout>
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@drawable/background_lengkapi_data"
+                    android:layout_below="@+id/RlTanggalLahir"
+                    android:layout_marginTop="100dp"
+                    android:text="Submit"
+                    android:id="@+id/BtnSubmit"
+                    android:textColor="@color/Putih"/>
+            </RelativeLayout>
+        </RelativeLayout>
+    </ScrollView>
+
+</android.support.constraint.ConstraintLayout>

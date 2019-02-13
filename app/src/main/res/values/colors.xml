@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryLight">#2D008577</color>
     <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorAccent">#008577</color>
     <color name="Biru">#62c0ff</color>
     <color name="Putih">#fff</color>
+    <color name="Hitam">#000</color>
 </resources>
