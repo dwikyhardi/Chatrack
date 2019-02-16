@@ -15,7 +15,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -47,6 +51,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import root.example.com.chatrack.service.LocationUpdate;
+import root.example.com.chatrack.tabFragment.TabChat;
+import root.example.com.chatrack.tabFragment.TabFriends;
+import root.example.com.chatrack.tabFragment.TabProfile;
+import root.example.com.chatrack.tabFragment.TabStreaming;
+import root.example.com.chatrack.tabFragment.ViewPagerAdapter;
 
 import static root.example.com.chatrack.MainActivity.ERROR_DIALOG_REQUEST;
 import static root.example.com.chatrack.MainActivity.PERMISSIONS_REQUEST_ENABLE_GPS;
@@ -55,6 +64,22 @@ public class MainMenu extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private final String TAG = "MainMenu";
+    //fragment
+    private TabLayout tabLayout;
+
+    //This is our viewPagerAdapter
+    private ViewPager viewPager;
+
+    ViewPagerAdapter adapter;
+    //Fragments
+    TabFriends friendsFragments;
+    TabStreaming streamingFragments;
+    TabChat chatFragments;
+    TabProfile profileFragments;
+    DrawerLayout drawer;
+    public boolean profileBuka = false;
+
+    //dataModel
     private String personName,
             personGivenName,
             personFamilyName,
@@ -62,10 +87,12 @@ public class MainMenu extends AppCompatActivity
             personId;
     private Uri personPhoto;
     private GoogleSignInClient mGoogleSignInClient;
-    private TextView NamaHeader,EmailHeader;
+    private TextView NamaHeader, EmailHeader;
     private ImageView FotoProfil;
     private long backPressedTime;
     private Toast backToast;
+    private TextView toolbar_text;
+
     //firebase
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth mAuth;
@@ -82,9 +109,7 @@ public class MainMenu extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
-        if (getIntent().getBooleanExtra("EXIT", false)) {
-            finish();
-        }
+
         //Database
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         myRef = mFirebaseDatabase.getReference();
@@ -94,7 +119,66 @@ public class MainMenu extends AppCompatActivity
         mLastLocation = LocationServices.getFusedLocationProviderClient(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("");
+        toolbar_text = (TextView) toolbar.findViewById(R.id.toolbar_title);
+        toolbar_text.setText("Friends");
         setSupportActionBar(toolbar);
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager.setOffscreenPageLimit(3);
+        setupViewPager(viewPager);
+        tabLayout = (TabLayout) findViewById(R.id.tablayout);
+        profileFragments = new TabProfile().newInstance();
+
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition(), false);
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                switch (position) {
+                    case 0:
+                        toolbar_text.setText("Friends");
+                        System.out.println("Friends");
+                        break;
+                    case 1:
+                        toolbar_text.setText("Chats");
+
+                        break;
+                    case 2:
+                        toolbar_text.setText("Streaming");
+                        break;
+                }
+                tabLayout.getTabAt(position).select();
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -129,6 +213,112 @@ public class MainMenu extends AppCompatActivity
         Glide.with(getApplicationContext()).load(personPhoto).into(FotoProfil);
         Log.d(TAG, "onCreate() returned: " + personPhoto);
 
+        FotoProfil.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                lihatProfile();
+            }
+        });
+
+    }
+
+    private void lihatProfile() {
+        FragmentTransaction mFragmentTransaction = getSupportFragmentManager().beginTransaction();
+        Bundle mBundle = new Bundle();
+        Log.d(TAG, "lihatProfile() returned: " + profileBuka);
+        if (!profileBuka) {
+            mBundle.clear();
+            mBundle.putString("Uri",personPhoto.toString());
+            mBundle.putString("Nama",personName);
+            profileFragments.setArguments(mBundle);
+            mFragmentTransaction.replace(R.id.ProfileContainer, profileFragments, "Profile");
+            mFragmentTransaction.attach(profileFragments);
+            mFragmentTransaction.addToBackStack(null);
+            mFragmentTransaction.commit();
+            toolbar_text.setText("Profile");
+            Log.d(TAG, "lihatProfile() returned: Mashok");
+            drawer.closeDrawer(GravityCompat.START);
+            profileBuka = true;
+            Log.d(TAG, "lihatProfile() returned: " + profileBuka);
+        } else {
+            profileBuka = true;
+        }
+    }
+
+    public void removeFragments(Fragment mFragment) {
+        FragmentTransaction mFragmentTransaction = getSupportFragmentManager().beginTransaction();
+        mFragmentTransaction.detach(mFragment).commit();
+        profileBuka = false;
+        Log.d(TAG, "removeFragments() returned: " + profileBuka);
+    }
+
+    private void setupViewPager(ViewPager viewPagerAdapter) {
+        adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        friendsFragments = new TabFriends();
+        streamingFragments = new TabStreaming();
+        chatFragments = new TabChat();
+        adapter.addFragment(friendsFragments, "Friends");
+        adapter.addFragment(chatFragments, "Chats");
+        adapter.addFragment(streamingFragments, "Streaming");
+        viewPager.setAdapter(adapter);
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.Logout) {
+            // Handle the camera action
+            signOut();
+            mAuth.signOut();
+        }else if (id == R.id.DashboardMenu){
+            removeFragments(profileFragments);
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    private void signOut() {
+        mGoogleSignInClient.signOut()
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        revokeAccess();
+                        startActivity(new Intent(MainMenu.this, MainActivity.class));
+                    }
+                });
+    }
+
+    private void revokeAccess() {
+        mGoogleSignInClient.revokeAccess()
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Log.d(TAG, "onComplete() returned: Beres");
+                    }
+                });
     }
 
     private void updateLokasi() {
@@ -248,10 +438,11 @@ public class MainMenu extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        }else if (backPressedTime + 2000 > System.currentTimeMillis()) {
+        } else if (profileBuka) {
+            removeFragments(profileFragments);
+        } else if (backPressedTime + 2000 > System.currentTimeMillis()) {
             Intent intent = new Intent(MainMenu.this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.putExtra("EXIT", true);
@@ -263,60 +454,5 @@ public class MainMenu extends AppCompatActivity
             backToast.show();
         }
         backPressedTime = System.currentTimeMillis();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.Logout) {
-            // Handle the camera action
-            signOut();
-            mAuth.signOut();
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
-    private void signOut() {
-        mGoogleSignInClient.signOut()
-                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        revokeAccess();
-                        startActivity(new Intent(MainMenu.this,MainActivity.class));
-                    }
-                });
-    }
-
-    private void revokeAccess() {
-        mGoogleSignInClient.revokeAccess()
-                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Log.d(TAG, "onComplete() returned: Beres");
-                    }
-                });
     }
 }

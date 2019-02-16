@@ -7,4 +7,7 @@
     <color name="Biru">#62c0ff</color>
     <color name="Putih">#fff</color>
     <color name="Hitam">#000</color>
+
+    <color name="colorTextPrimary">#FFFFFF</color>
+    <color name="colorTextDisable">#66FFFFFF</color>
 </resources>

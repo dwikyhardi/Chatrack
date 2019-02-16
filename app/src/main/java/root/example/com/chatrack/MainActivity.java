@@ -38,6 +38,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import root.example.com.chatrack.dataModel.getUserData;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private GoogleSignInClient mGoogleSignInClient;
@@ -82,7 +84,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                try{
+                try {
+                    progress = new ProgressDialog(MainActivity.this);
+                    progress.setMessage("");
+                    progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    progress.setIndeterminate(true);
+                    progress.setProgress(0);
+                    progress.show();
                     FirebaseUser user = mAuth.getCurrentUser();
                     UserId = user.getUid();
                     Log.d(TAG, "onComplete() returned: Ini user id ==== " + UserId);
@@ -103,15 +111,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     } else {
                         // User is signed out
                         Log.d(TAG, "onAuthStateChanged:signed_out");
+                        progress.dismiss();
                     }
-                }catch (NullPointerException e){
+                } catch (NullPointerException e) {
                     e.printStackTrace();
+                    progress.dismiss();
                 }
             }
         };
 
 
     }
+
     private boolean checkMapServices() {
         if (isServicesOK()) {
             if (isMapsEnabled()) {
@@ -305,10 +316,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mGetUserData.setUserId(ds.child(UserId).getValue(getUserData.class).getUserId());
                 if (mGetUserData.getUserId() != null) {
                     startActivity(new Intent(MainActivity.this, MainMenu.class));
+                    progress.dismiss();
                 }
-            } catch (NullPointerException e){
+            } catch (NullPointerException e) {
                 startActivity(new Intent(MainActivity.this, LengkapiData.class));
                 Log.d(TAG, "cekDb() returned: masuk else");
+                progress.dismiss();
             }
         }
     }
@@ -328,18 +341,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onBackPressed() {
-        if (backPressedTime + 2000 > System.currentTimeMillis()) {
-            Intent intent = new Intent(MainActivity.this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.putExtra("EXIT", true);
-            startActivity(intent);
-            backToast.cancel();
+       /* if (backPressedTime + 2000 > System.currentTimeMillis()) {
+            finish();
             super.onBackPressed();
         } else {
             backToast = Toast.makeText(getBaseContext(), "Tekan Lagi Untuk Keluar", Toast.LENGTH_SHORT);
             backToast.show();
         }
-        backPressedTime = System.currentTimeMillis();
+        backPressedTime = System.currentTimeMillis();*/
+       finish();
     }
 
     @Override

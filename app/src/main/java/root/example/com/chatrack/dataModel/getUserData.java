@@ -1,4 +1,4 @@
-package root.example.com.chatrack;
+package root.example.com.chatrack.dataModel;
 
 public class getUserData {
     private String UserId;
