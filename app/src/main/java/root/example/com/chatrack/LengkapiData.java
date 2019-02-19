@@ -39,6 +39,7 @@ public class LengkapiData extends AppCompatActivity implements View.OnClickListe
     private String TanggalLahir;
     private String JenisKelamin;
     private String UserId;
+    private String LinkFoto;
 
     //firebase
     private FirebaseDatabase mFirebaseDatabase;
@@ -61,6 +62,7 @@ public class LengkapiData extends AppCompatActivity implements View.OnClickListe
         FirebaseUser user = mAuth.getCurrentUser();
         UserId = user.getUid();
         BtnSubmit.setOnClickListener(this);
+        LinkFoto = user.getPhotoUrl().toString();
 
         //Database
         mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -108,12 +110,12 @@ public class LengkapiData extends AppCompatActivity implements View.OnClickListe
         Alamat = EtAlamat.getText().toString().trim();
         TanggalLahir = TvTanggalLahir.getText().toString().trim();
         JenisKelamin = SpJenisKelamin.getSelectedItem().toString().trim();
-        setUserData mSetUserData = new setUserData(UserId,Nama,Alamat,TanggalLahir,"0","0",JenisKelamin);
-        myRef.child("USER").child(UserId).setValue(mSetUserData).addOnSuccessListener(new OnSuccessListener<Void>() {
+        setUserData mSetUserData = new setUserData(UserId, Nama, Alamat, TanggalLahir, "0", "0", JenisKelamin, LinkFoto);
+        myRef.child("CHATRACK").child("USER").child(UserId).setValue(mSetUserData).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 Toast.makeText(LengkapiData.this, "Data Berhasil Ditambahkan", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(LengkapiData.this,MainMenu.class));
+                startActivity(new Intent(LengkapiData.this, MainMenu.class));
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

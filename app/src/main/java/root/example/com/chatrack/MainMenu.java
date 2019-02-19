@@ -13,8 +13,6 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -47,15 +45,19 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import root.example.com.chatrack.dataModel.getUserData;
 import root.example.com.chatrack.service.LocationUpdate;
 import root.example.com.chatrack.tabFragment.TabChat;
 import root.example.com.chatrack.tabFragment.TabFriends;
 import root.example.com.chatrack.tabFragment.TabProfile;
 import root.example.com.chatrack.tabFragment.TabStreaming;
-import root.example.com.chatrack.tabFragment.ViewPagerAdapter;
+import root.example.com.chatrack.adapter.ViewPagerAdapter;
 
 import static root.example.com.chatrack.MainActivity.ERROR_DIALOG_REQUEST;
 import static root.example.com.chatrack.MainActivity.PERMISSIONS_REQUEST_ENABLE_GPS;
@@ -97,9 +99,9 @@ public class MainMenu extends AppCompatActivity
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private DatabaseReference myRef;
+    private DatabaseReference myRef, ambilDataProfile;
     private FirebaseAuth firebaseAuth;
-    String UserId;
+    String UserId, NamaAku;
     private String lat, lng;
 
     //Lokasi Update
@@ -109,14 +111,6 @@ public class MainMenu extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
-
-        //Database
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        myRef = mFirebaseDatabase.getReference();
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
-        UserId = user.getUid();
-        mLastLocation = LocationServices.getFusedLocationProviderClient(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
@@ -129,6 +123,37 @@ public class MainMenu extends AppCompatActivity
         tabLayout = (TabLayout) findViewById(R.id.tablayout);
         profileFragments = new TabProfile().newInstance();
 
+
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
+        if (acct != null) {
+            personName = acct.getDisplayName();
+            personGivenName = acct.getGivenName();
+            personFamilyName = acct.getFamilyName();
+            personEmail = acct.getEmail();
+            personId = acct.getId();
+            personPhoto = acct.getPhotoUrl();
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        View header = navigationView.getHeaderView(0);
+        NamaHeader = (TextView) header.findViewById(R.id.TvNama);
+        EmailHeader = (TextView) header.findViewById(R.id.TvEmail);
+        FotoProfil = (ImageView) header.findViewById(R.id.IvProvile);
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -178,37 +203,29 @@ public class MainMenu extends AppCompatActivity
             }
         });
 
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        //Database
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        myRef = mFirebaseDatabase.getReference();
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        UserId = user.getUid();
+        ambilDataProfile = mFirebaseDatabase.getReference();
+        mLastLocation = LocationServices.getFusedLocationProviderClient(this);
 
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
-        if (acct != null) {
-            personName = acct.getDisplayName();
-            personGivenName = acct.getGivenName();
-            personFamilyName = acct.getFamilyName();
-            personEmail = acct.getEmail();
-            personId = acct.getId();
-            personPhoto = acct.getPhotoUrl();
-        }
+        ambilDataProfile.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ambilProfile(dataSnapshot);
+                Log.d(TAG, "onDataChange() returned: " + dataSnapshot);
+            }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        View header = navigationView.getHeaderView(0);
-        NamaHeader = (TextView) header.findViewById(R.id.TvNama);
-        EmailHeader = (TextView) header.findViewById(R.id.TvEmail);
-        FotoProfil = (ImageView) header.findViewById(R.id.IvProvile);
-        NamaHeader.setText(personName);
+            }
+        });
+
         EmailHeader.setText(personEmail);
         Glide.with(getApplicationContext()).load(personPhoto).into(FotoProfil);
         Log.d(TAG, "onCreate() returned: " + personPhoto);
@@ -222,14 +239,24 @@ public class MainMenu extends AppCompatActivity
 
     }
 
-    private void lihatProfile() {
+    private void ambilProfile(DataSnapshot dataSnapshot) {
+        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+            getUserData mGetUserData = new getUserData();
+            mGetUserData.setNama(ds.child("USER").child(UserId).getValue(getUserData.class).getNama());
+            NamaAku = mGetUserData.getNama();
+            NamaHeader.setText(NamaAku);
+            Log.d(TAG, "ambilProfile() returned: " + NamaAku);
+        }
+    }
+
+    public void lihatProfile() {
         FragmentTransaction mFragmentTransaction = getSupportFragmentManager().beginTransaction();
         Bundle mBundle = new Bundle();
         Log.d(TAG, "lihatProfile() returned: " + profileBuka);
         if (!profileBuka) {
             mBundle.clear();
-            mBundle.putString("Uri",personPhoto.toString());
-            mBundle.putString("Nama",personName);
+            mBundle.putString("Uri", personPhoto.toString());
+            mBundle.putString("Nama", NamaAku);
             profileFragments.setArguments(mBundle);
             mFragmentTransaction.replace(R.id.ProfileContainer, profileFragments, "Profile");
             mFragmentTransaction.attach(profileFragments);
@@ -291,7 +318,7 @@ public class MainMenu extends AppCompatActivity
             // Handle the camera action
             signOut();
             mAuth.signOut();
-        }else if (id == R.id.DashboardMenu){
+        } else if (id == R.id.DashboardMenu) {
             removeFragments(profileFragments);
         }
 
@@ -338,9 +365,9 @@ public class MainMenu extends AppCompatActivity
                     } catch (NullPointerException e) {
                         e.printStackTrace();
                     }
-                    myRef.child("USER").child(UserId)
+                    myRef.child("CHATRACK").child("USER").child(UserId)
                             .child("Latitude").setValue(lat);
-                    myRef.child("USER").child(UserId)
+                    myRef.child("CHATRACK").child("USER").child(UserId)
                             .child("Longitude").setValue(lng);
                     startLocationService();
                 } else {

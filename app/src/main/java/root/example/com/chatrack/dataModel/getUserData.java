@@ -8,6 +8,7 @@ public class getUserData {
     private String Latitude;
     private String Longitude;
     private String JenisKelamin;
+    private String LinkFoto;
 
     public getUserData(){
 
@@ -67,5 +68,13 @@ public class getUserData {
 
     public void setJenisKelamin(String jenisKelamin) {
         JenisKelamin = jenisKelamin;
+    }
+
+    public String getLinkFoto() {
+        return LinkFoto;
+    }
+
+    public void setLinkFoto(String linkFoto) {
+        LinkFoto = linkFoto;
     }
 }

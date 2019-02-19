@@ -8,9 +8,11 @@ public class setUserData {
     public String Latitude;
     public String Longitude;
     public String JenisKelamin;
+    public String LinkFoto;
 
     public setUserData(String UserId, String Nama, String Alamat,
-                       String TanggalLahir, String Latitude, String Logitude, String JenisKelamin){
+                       String TanggalLahir, String Latitude, String Logitude,
+                       String JenisKelamin, String LinkFoto){
         this.UserId = UserId;
         this.Nama = Nama;
         this.Alamat = Alamat;
@@ -18,5 +20,6 @@ public class setUserData {
         this.Latitude = Latitude;
         this.Longitude = Logitude;
         this.JenisKelamin = JenisKelamin;
+        this.LinkFoto = LinkFoto;
     }
 }

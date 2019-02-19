@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/RlChat"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profileImageChat"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_below="@id/SenderName"
+        android:layout_marginStart="10dp" />
+
+    <TextView
+        android:id="@+id/SenderName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@+id/profileImageChat"
+        android:textColor="@color/Hitam" />
+
+    <TextView
+        android:id="@+id/TimeStamp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ChatInBuble"
+        android:layout_alignEnd="@+id/ChatInBuble"
+        android:layout_marginEnd="10dp"
+        android:layout_toRightOf="@+id/profileImageChat"
+        android:textColor="@color/Hitam" />
+
+    <TextView
+        android:id="@+id/ChatInBuble"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/SenderName"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_toRightOf="@+id/profileImageChat"
+        android:background="@drawable/bg_chat_in"
+        android:paddingStart="20dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="10dp"
+        android:textColor="@color/Hitam"
+        android:textSize="16sp" />
+</RelativeLayout>

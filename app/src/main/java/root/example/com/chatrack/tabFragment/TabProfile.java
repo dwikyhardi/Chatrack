@@ -34,6 +34,9 @@ public class TabProfile extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        nama = getArguments().getString("Nama");
+        uri = getArguments().getString("Uri");
+        uriPhoto = Uri.parse(uri);
         Nama = (TextView) view.findViewById(R.id.NamaFragment);
         FotoFragment = (CircleImageView) view.findViewById(R.id.FotoFragmentProfile);
 
@@ -50,12 +53,6 @@ public class TabProfile extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        nama = getArguments().getString("Nama");
-        uri = getArguments().getString("Uri");
-        uriPhoto = Uri.parse(uri);
-
-
-        System.out.println(uriPhoto+" |||| "+nama);
     }
 
     @Override

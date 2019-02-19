@@ -124,8 +124,8 @@ public class LocationUpdate extends Service {
             FirebaseUser user = mAuth.getCurrentUser();
             userID = user.getUid();
 
-            myRef.child("USER").child(userID).child("Latitude").setValue(lat);
-            myRef.child("USER").child(userID).child("Longitude").setValue(lng);
+            myRef.child("CHATRACK").child("USER").child(userID).child("Latitude").setValue(lat);
+            myRef.child("CHATRACK").child("USER").child(userID).child("Longitude").setValue(lng);
         }catch (NullPointerException e){
             Log.e(TAG, "saveUserLocation: User instance is null, stopping location service.");
             Log.e(TAG, "saveUserLocation: NullPointerException: "  + e.getMessage() );

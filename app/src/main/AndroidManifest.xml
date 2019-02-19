@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -20,6 +21,7 @@
         android:roundIcon="@drawable/chatrack_logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ChatActivity"></activity>
         <activity android:name=".LengkapiData" />
         <activity
             android:name=".MainMenu"
@@ -35,7 +37,8 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/api_maps"/>
+            android:value="@string/api_maps" />
+
         <service
             android:name=".service.LocationUpdate"
             android:stopWithTask="false" />

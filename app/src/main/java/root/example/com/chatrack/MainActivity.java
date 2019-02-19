@@ -100,7 +100,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                Log.d(TAG, "onDataChange() returned: masukCekDb" );
                                 cekDb(dataSnapshot);
+                                Log.d(TAG, "onDataChange() returned: " + dataSnapshot);
                             }
 
                             @Override
@@ -291,6 +293,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     cekDb(dataSnapshot);
+                                    Log.d(TAG, "onDataChange() returned: Masuk cekDb");
                                 }
 
                                 @Override
@@ -310,13 +313,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void cekDb(DataSnapshot dataSnapshot) {
+        Log.d(TAG, "cekDb() returned: masok " + dataSnapshot);
         for (DataSnapshot ds : dataSnapshot.getChildren()) {
             getUserData mGetUserData = new getUserData();
             try {
-                mGetUserData.setUserId(ds.child(UserId).getValue(getUserData.class).getUserId());
+                mGetUserData.setUserId(ds.child("USER").child(UserId).getValue(getUserData.class).getUserId());
+                Log.d(TAG, "cekDb() returned: masuk Try");
                 if (mGetUserData.getUserId() != null) {
+                    Log.d(TAG, "cekDb() returned: masuk if");
                     startActivity(new Intent(MainActivity.this, MainMenu.class));
                     progress.dismiss();
+                    break;
                 }
             } catch (NullPointerException e) {
                 startActivity(new Intent(MainActivity.this, LengkapiData.class));

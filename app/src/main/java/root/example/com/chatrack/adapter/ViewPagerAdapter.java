@@ -1,4 +1,4 @@
-package root.example.com.chatrack.tabFragment;
+package root.example.com.chatrack.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
