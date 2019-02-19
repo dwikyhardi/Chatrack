@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import root.example.com.chatrack.ChatActivity;
 import root.example.com.chatrack.MainMenu;
 import root.example.com.chatrack.R;
@@ -124,6 +125,7 @@ public class TabFriends extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 AmbilDataGroup((Map<String, Object>) dataSnapshot.getValue());
+                Log.d(TAG, "onDataChange() returned: dbAmbilDataGroup" + dataSnapshot);
             }
 
             @Override
@@ -136,6 +138,7 @@ public class TabFriends extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         UserId = user.getUid();
+        Log.d(TAG, "onViewCreated() returned: " + UserId);
 
         //ArrayList
         NamaProfile = new ArrayList<>();
@@ -232,12 +235,13 @@ public class TabFriends extends Fragment {
         if (GroupId != null) {
             int i = 0;
             while (GroupId.size() > i) {
-                memberId = member[i].replace("[", "").replace("]", "");
-                Log.d(TAG, "AmbilDataGroup() returned: " + memberId);
+                memberId = GroupMember.get(i).replace("[", "").replace("]", "");
+                Log.d(TAG, "AmbilDataGroup() returned: " + GroupMember.get(i).split(","));
                 if (memberId.contains(UserId)) {
                     this.NamaGroup.add(NamaGroup.get(i));
                     this.GroupId.add(GroupId.get(i));
                 }
+                Log.d(TAG, "AmbilDataGroup() returned: int i" + i);
                 i++;
             }
         }
@@ -315,6 +319,7 @@ public class TabFriends extends Fragment {
         final EditText namaGroup = new EditText(getActivity());
         namaGroup.setHint("Enter Your Group Name");
         mBuilder.setView(namaGroup);
+
         mBuilder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

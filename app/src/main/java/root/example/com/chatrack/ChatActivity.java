@@ -1,27 +1,26 @@
 package root.example.com.chatrack;
 
-import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -30,6 +29,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -38,7 +39,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import root.example.com.chatrack.adapter.ListViewAdapter;
+import root.example.com.chatrack.dataModel.User;
 import root.example.com.chatrack.dataModel.getChatHistory;
+import root.example.com.chatrack.tabFragment.Tracking;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -47,12 +50,16 @@ public class ChatActivity extends AppCompatActivity {
     private EditText TextToSend;
     private ImageView btnSend;
     private Toolbar toolbarChat;
-    private String namaGroup, idGroup;
+    private String namaGroup, idGroup, idTeman;
+    private String[] memberOld ;
+    private ArrayList<String> memberNew;
     private ImageView Back;
     private ScrollView Scroll;
     private ListView ChatList;
     private ArrayList<getChatHistory> chatDetails;
     private static ListViewAdapter adapter;
+    private ArrayList<User> mUserList = new ArrayList<>();
+
 
     //firebase
     private FirebaseDatabase mFirebaseDatabase;
@@ -70,6 +77,9 @@ public class ChatActivity extends AppCompatActivity {
         idGroup = getIntent().getStringExtra("GroupId");
         toolbarChat = (Toolbar) findViewById(R.id.toolbarChat);
         setSupportActionBar(toolbarChat);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
         initView();
 
         //Database
@@ -80,15 +90,36 @@ public class ChatActivity extends AppCompatActivity {
         FirebaseUser user = mAuth.getCurrentUser();
         UserId = user.getUid();
         chatDetails = new ArrayList<>();
+        memberNew = new ArrayList<>();
+        memberNew.clear();
         chatDetails.clear();
 
         getUserInfo();
+        DatabaseReference add = mFirebaseDatabase.getReference().child("CHATRACK").child("GROUP").child(idGroup).child("GroupMember");
+        add.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ambilDataMember(dataSnapshot);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void ambilDataMember(DataSnapshot dataSnapshot) {
+        memberOld = dataSnapshot.getValue().toString()
+                .replace("]","")
+                .replace("[","")
+                .split(",");
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         Log.d(TAG, "onStart() returned: nyampe onStart");
+        chatDetails.clear();
         GroupNameRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -149,17 +180,7 @@ public class ChatActivity extends AppCompatActivity {
         ChatInBuble = (TextView) findViewById(R.id.ChatInBuble);
         groupName = (TextView) toolbarChat.findViewById(R.id.toolbar_title);
         ChatList = (ListView) findViewById(R.id.ListChat);
-        Back = (ImageView) toolbarChat.findViewById(R.id.Back);
         groupName.setText(namaGroup);
-
-
-        Back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(ChatActivity.this, MainMenu.class));
-                finish();
-            }
-        });
 
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -169,6 +190,7 @@ public class ChatActivity extends AppCompatActivity {
                 TextToSend.setText("");
             }
         });
+        hideSoftKeyboard();
     }
 
     private void sendMessage() {
@@ -236,15 +258,94 @@ public class ChatActivity extends AppCompatActivity {
         return true;
     }
 
+
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
+
+        if (item.getItemId() == R.id.usingBarcode) {
+            IntentIntegrator integrator = new IntentIntegrator(ChatActivity.this);
+            integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
+            integrator.setPrompt("Add Friends");
+            integrator.setCameraId(0);
+            integrator.setBeepEnabled(false);
+            integrator.setCaptureActivity(ScanActivity.class);
+            integrator.setBarcodeImageEnabled(false);
+            integrator.initiateScan();
+        }
+
+        if (item.getItemId() == R.id.usingUserName) {
+            Toast.makeText(this, "Mantul", Toast.LENGTH_SHORT).show();
+        }
+
         if (item.getItemId() == R.id.addMember) {
 
         }
         if (item.getItemId() == R.id.exitGroup) {
-
+            Toast.makeText(this, "Exit", Toast.LENGTH_SHORT).show();
+        }
+        if (item.getItemId() == R.id.Track){
+            inflateUserListFragment();
+        }
+        if (item.getItemId() == android.R.id.home){
+            Tracking fragment =
+                    (Tracking) getSupportFragmentManager().findFragmentByTag("User List");
+            if(fragment != null){
+                if(fragment.isVisible()){
+                    getSupportFragmentManager().popBackStack();
+                    return true;
+                }
+            }else {
+                finish();
+            }
         }
         return true;
+    }
+
+    private void inflateUserListFragment(){
+        hideSoftKeyboard();
+
+        Tracking fragment = Tracking.newInstance();
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList("intent_user_list", mUserList);
+        fragment.setArguments(bundle);
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_up);
+        transaction.replace(R.id.FrameUser, fragment,"User List");
+        transaction.addToBackStack("User List");
+        transaction.commit();
+    }
+
+    private void hideSoftKeyboard(){
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+    }
+
+    private void addMember() {
+        memberNew.clear();
+        DatabaseReference add = mFirebaseDatabase.getReference().child("CHATRACK").child("GROUP").child(idGroup).child("GroupMember");
+        int i=0;
+        while (memberOld.length > i){
+            memberNew.add(memberOld[i]);
+            i++;
+        }
+        memberNew.add(idTeman);
+        add.setValue(memberNew.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(ChatActivity.this, "Success Adding Member", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (result != null) {
+            idTeman = result.getContents();
+            addMember();
+        }
     }
 }

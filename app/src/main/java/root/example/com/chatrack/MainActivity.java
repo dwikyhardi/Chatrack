@@ -1,5 +1,6 @@
 package root.example.com.chatrack;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -54,6 +55,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String UserId;
     public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 9002;
     public static final int PERMISSIONS_REQUEST_ENABLE_GPS = 9003;
+    public static final int PERMISSIONS_REQUEST_ACCESS_CAMERA = 9004;
+    private boolean mCameraPermissionGranted = false;
     private boolean mLocationPermissionGranted = false;
     public static final int ERROR_DIALOG_REQUEST = 9001;
 
@@ -100,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                Log.d(TAG, "onDataChange() returned: masukCekDb" );
+                                Log.d(TAG, "onDataChange() returned: masukCekDb");
                                 cekDb(dataSnapshot);
                                 Log.d(TAG, "onDataChange() returned: " + dataSnapshot);
                             }
@@ -173,6 +176,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         }
+        mCameraPermissionGranted = false;
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_ACCESS_CAMERA: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    mCameraPermissionGranted = true;
+                }
+            }
+        }
+    }
+
+    private void getCameraPermission() {
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_GRANTED) {
+            mCameraPermissionGranted = true;
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA},
+                    PERMISSIONS_REQUEST_ACCESS_CAMERA);
+        }
     }
 
     private void getLocationPermission() {
@@ -223,6 +247,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 getLocationPermission();
             }
         }
+        if (mCameraPermissionGranted) {
+
+        } else {
+            getCameraPermission();
+        }
     }
 
     @Override
@@ -264,6 +293,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Toast.makeText(this, "Terimakasih", Toast.LENGTH_SHORT).show();
                 } else {
                     getLocationPermission();
+                }
+            }
+        }
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_ACCESS_CAMERA: {
+                if (mCameraPermissionGranted) {
+
+                } else {
+                    getCameraPermission();
                 }
             }
         }
@@ -356,7 +394,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             backToast.show();
         }
         backPressedTime = System.currentTimeMillis();*/
-       finish();
+        finish();
     }
 
     @Override

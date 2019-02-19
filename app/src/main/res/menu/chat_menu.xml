@@ -2,9 +2,26 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/Track"
+        android:title="User List">
+
+    </item>
+    <item
         android:id="@+id/addMember"
-        android:title="Add Member"></item>
+        android:title="Add Member">
+        <menu>
+            <item
+                android:title="Using Barcode"
+                android:id="@+id/usingBarcode">
+            </item>
+            <item
+                android:title="Using UserName"
+                android:id="@+id/usingUserName">
+            </item>
+        </menu>
+    </item>
     <item
         android:id="@+id/exitGroup"
-        android:title="Exit Group"></item>
+        android:title="Exit Group">
+    </item>
 </menu>
