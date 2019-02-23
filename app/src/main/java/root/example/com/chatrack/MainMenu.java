@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -110,6 +111,7 @@ public class MainMenu extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_main_menu);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -256,6 +258,7 @@ public class MainMenu extends AppCompatActivity
         if (!profileBuka) {
             mBundle.clear();
             mBundle.putString("Uri", personPhoto.toString());
+            mBundle.putString("uid", UserId);
             mBundle.putString("Nama", NamaAku);
             profileFragments.setArguments(mBundle);
             mFragmentTransaction.replace(R.id.ProfileContainer, profileFragments, "Profile");

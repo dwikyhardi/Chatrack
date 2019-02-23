@@ -2,6 +2,7 @@ package root.example.com.chatrack;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
@@ -51,6 +52,7 @@ public class LengkapiData extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_lengkapi_data);
         EtNama = (EditText) findViewById(R.id.EtNama);
         EtAlamat = (EditText) findViewById(R.id.EtAlamat);

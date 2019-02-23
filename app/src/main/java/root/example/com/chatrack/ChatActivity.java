@@ -1,6 +1,7 @@
 package root.example.com.chatrack;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
@@ -72,6 +73,7 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_chat);
         namaGroup = getIntent().getStringExtra("GroupName");
         idGroup = getIntent().getStringExtra("GroupId");
@@ -196,7 +198,7 @@ public class ChatActivity extends AppCompatActivity {
     private void sendMessage() {
         String Message = TextToSend.getText().toString();
         String MessageKey = GroupNameRef.push().getKey();
-        if (TextUtils.isEmpty(Message)) {
+        if (TextUtils.isEmpty(Message) || Message.equals(" ") || Message.equals("  ") || Message.equals("   ")|| Message.equals("    ") || Message.equals("     ")) {
 
         } else {
             Calendar mCalendarDate = Calendar.getInstance();
